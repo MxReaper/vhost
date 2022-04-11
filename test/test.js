@@ -1,17 +1,17 @@
 
-var assert = require('assert')
-var http = require('http')
-var request = require('supertest')
-var vhost = require('..')
+const assert = require('assert')
+const http = require('http')
+const request = require('supertest')
+const vhost = require('..')
 
 describe('vhost(hostname, server)', function () {
   it('should route by Host', function (done) {
-    var vhosts = []
+    const vhosts = []
 
     vhosts.push(vhost('tobi.com', tobi))
     vhosts.push(vhost('loki.com', loki))
 
-    var app = createServer(vhosts)
+    const app = createServer(vhosts)
 
     function tobi (req, res) { res.end('tobi') }
     function loki (req, res) { res.end('loki') }
@@ -23,7 +23,7 @@ describe('vhost(hostname, server)', function () {
   })
 
   it('should ignore port in Host', function (done) {
-    var app = createServer('tobi.com', function (req, res) {
+    const app = createServer('tobi.com', function (req, res) {
       res.end('tobi')
     })
 
@@ -34,7 +34,7 @@ describe('vhost(hostname, server)', function () {
   })
 
   it('should support IPv6 literal in Host', function (done) {
-    var app = createServer('[::1]', function (req, res) {
+    const app = createServer('[::1]', function (req, res) {
       res.end('loopback')
     })
 
@@ -45,12 +45,12 @@ describe('vhost(hostname, server)', function () {
   })
 
   it('should 404 unless matched', function (done) {
-    var vhosts = []
+    const vhosts = []
 
     vhosts.push(vhost('tobi.com', tobi))
     vhosts.push(vhost('loki.com', loki))
 
-    var app = createServer(vhosts)
+    const app = createServer(vhosts)
 
     function tobi (req, res) { res.end('tobi') }
     function loki (req, res) { res.end('loki') }
@@ -62,13 +62,13 @@ describe('vhost(hostname, server)', function () {
   })
 
   it('should 404 without Host header', function (done) {
-    var vhosts = []
+    const vhosts = []
 
     vhosts.push(vhost('tobi.com', tobi))
     vhosts.push(vhost('loki.com', loki))
 
-    var server = createServer(vhosts)
-    var listeners = server.listeners('request')
+    const server = createServer(vhosts)
+    const listeners = server.listeners('request')
 
     server.removeAllListeners('request')
     listeners.unshift(function (req) { req.headers.host = undefined })
@@ -89,11 +89,11 @@ describe('vhost(hostname, server)', function () {
       })
 
       it('should accept string', function () {
-        assert.doesNotThrow(vhost.bind(null, 'loki.com', function () {}))
+        assert.doesNotThrow(vhost.bind(null, 'loki.com', function () { }))
       })
 
       it('should accept RegExp', function () {
-        assert.doesNotThrow(vhost.bind(null, /loki\.com/, function () {}))
+        assert.doesNotThrow(vhost.bind(null, /loki\.com/, function () { }))
       })
     })
 
@@ -103,7 +103,7 @@ describe('vhost(hostname, server)', function () {
       })
 
       it('should accept function', function () {
-        assert.doesNotThrow(vhost.bind(null, 'loki.com', function () {}))
+        assert.doesNotThrow(vhost.bind(null, 'loki.com', function () { }))
       })
 
       it('should reject plain object', function () {
@@ -114,7 +114,7 @@ describe('vhost(hostname, server)', function () {
 
   describe('with string hostname', function () {
     it('should support wildcards', function (done) {
-      var app = createServer('*.ferrets.com', function (req, res) {
+      const app = createServer('*.ferrets.com', function (req, res) {
         res.end('wildcard!')
       })
 
@@ -125,7 +125,7 @@ describe('vhost(hostname, server)', function () {
     })
 
     it('should restrict wildcards to single part', function (done) {
-      var app = createServer('*.ferrets.com', function (req, res) {
+      const app = createServer('*.ferrets.com', function (req, res) {
         res.end('wildcard!')
       })
 
@@ -136,7 +136,7 @@ describe('vhost(hostname, server)', function () {
     })
 
     it('should treat dot as a dot', function (done) {
-      var app = createServer('a.b.com', function (req, res) {
+      const app = createServer('a.b.com', function (req, res) {
         res.end('tobi')
       })
 
@@ -147,7 +147,7 @@ describe('vhost(hostname, server)', function () {
     })
 
     it('should match entire string', function (done) {
-      var app = createServer('.com', function (req, res) {
+      const app = createServer('.com', function (req, res) {
         res.end('commercial')
       })
 
@@ -158,9 +158,9 @@ describe('vhost(hostname, server)', function () {
     })
 
     it('should populate req.vhost', function (done) {
-      var app = createServer('user-*.*.com', function (req, res) {
-        var keys = Object.keys(req.vhost).sort()
-        var arr = keys.map(function (k) { return [k, req.vhost[k]] })
+      const app = createServer('user-*.*.com', function (req, res) {
+        const keys = Object.keys(req.vhost).sort()
+        const arr = keys.map(function (k) { return [k, req.vhost[k]] })
         res.end(JSON.stringify(arr))
       })
 
@@ -173,7 +173,7 @@ describe('vhost(hostname, server)', function () {
 
   describe('with RegExp hostname', function () {
     it('should match using RegExp', function (done) {
-      var app = createServer(/[tl]o[bk]i\.com/, function (req, res) {
+      const app = createServer(/[tl]o[bk]i\.com/, function (req, res) {
         res.end('tobi')
       })
 
@@ -184,12 +184,12 @@ describe('vhost(hostname, server)', function () {
     })
 
     it('should match entire hostname', function (done) {
-      var vhosts = []
+      const vhosts = []
 
       vhosts.push(vhost(/\.tobi$/, tobi))
       vhosts.push(vhost(/^loki\./, loki))
 
-      var app = createServer(vhosts)
+      const app = createServer(vhosts)
 
       function tobi (req, res) { res.end('tobi') }
       function loki (req, res) { res.end('loki') }
@@ -201,9 +201,9 @@ describe('vhost(hostname, server)', function () {
     })
 
     it('should populate req.vhost', function (done) {
-      var app = createServer(/user-(bob|joe)\.([^.]+)\.com/, function (req, res) {
-        var keys = Object.keys(req.vhost).sort()
-        var arr = keys.map(function (k) { return [k, req.vhost[k]] })
+      const app = createServer(/user-(bob|joe)\.([^.]+)\.com/, function (req, res) {
+        const keys = Object.keys(req.vhost).sort()
+        const arr = keys.map(function (k) { return [k, req.vhost[k]] })
         res.end(JSON.stringify(arr))
       })
 
@@ -216,15 +216,15 @@ describe('vhost(hostname, server)', function () {
 })
 
 function createServer (hostname, server) {
-  var vhosts = !Array.isArray(hostname)
+  const vhosts = !Array.isArray(hostname)
     ? [vhost(hostname, server)]
     : hostname
 
   return http.createServer(function onRequest (req, res) {
-    var index = 0
+    let index = 0
 
     function next (err) {
-      var vhost = vhosts[index++]
+      const vhost = vhosts[index++]
 
       if (!vhost || err) {
         res.statusCode = err ? (err.status || 500) : 404

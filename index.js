@@ -19,11 +19,11 @@ module.exports = vhost
  * @private
  */
 
-var ASTERISK_REGEXP = /\*/g
-var ASTERISK_REPLACE = '([^.]+)'
-var END_ANCHORED_REGEXP = /(?:^|[^\\])(?:\\\\)*\$$/
-var ESCAPE_REGEXP = /([.+?^=!:${}()|[\]/\\])/g
-var ESCAPE_REPLACE = '\\$1'
+const ASTERISK_REGEXP = /\*/g
+const ASTERISK_REPLACE = '([^.]+)'
+const END_ANCHORED_REGEXP = /(?:^|[^\\])(?:\\\\)*\$$/
+const ESCAPE_REGEXP = /([.+?^=!:${}()|[\]/\\])/g
+const ESCAPE_REPLACE = '\\$1'
 
 /**
  * Create a vhost middleware.
@@ -48,10 +48,10 @@ function vhost (hostname, handle) {
   }
 
   // create regular expression for hostname
-  var regexp = hostregexp(hostname)
+  const regexp = hostregexp(hostname)
 
   return function vhost (req, res, next) {
-    var vhostdata = vhostof(req, regexp)
+    const vhostdata = vhostof(req, regexp)
 
     if (!vhostdata) {
       return next()
@@ -74,16 +74,16 @@ function vhost (hostname, handle) {
  */
 
 function hostnameof (req) {
-  var host = req.headers.host
+  const host = req.headers.host
 
   if (!host) {
     return
   }
 
-  var offset = host[0] === '['
+  const offset = host[0] === '['
     ? host.indexOf(']') + 1
     : 0
-  var index = host.indexOf(':', offset)
+  const index = host.indexOf(':', offset)
 
   return index !== -1
     ? host.substring(0, index)
@@ -110,7 +110,7 @@ function isregexp (val) {
  */
 
 function hostregexp (val) {
-  var source = !isregexp(val)
+  let source = !isregexp(val)
     ? String(val).replace(ESCAPE_REGEXP, ESCAPE_REPLACE).replace(ASTERISK_REGEXP, ASTERISK_REPLACE)
     : val.source
 
@@ -137,26 +137,26 @@ function hostregexp (val) {
  */
 
 function vhostof (req, regexp) {
-  var host = req.headers.host
-  var hostname = hostnameof(req)
+  const host = req.headers.host
+  const hostname = hostnameof(req)
 
   if (!hostname) {
     return
   }
 
-  var match = regexp.exec(hostname)
+  const match = regexp.exec(hostname)
 
   if (!match) {
     return
   }
 
-  var obj = Object.create(null)
+  const obj = Object.create(null)
 
   obj.host = host
   obj.hostname = hostname
   obj.length = match.length - 1
 
-  for (var i = 1; i < match.length; i++) {
+  for (let i = 1; i < match.length; i++) {
     obj[i - 1] = match[i]
   }
 
